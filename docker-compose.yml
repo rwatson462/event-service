@@ -1,0 +1,22 @@
+version: "3.0"
+services:
+  server:
+    build: build/server
+    volumes:
+      - ./src/server:/var/www
+      - ./src/vendor:/var/vendor
+    command: [php, /var/www/server.php]
+    ports:
+      - 9501:9501
+    depends_on:
+      - redis
+  redis:
+    image: redis
+    volumes:
+      - ./data/redis:/data
+  test:
+    build: build/test
+    volumes:
+      - ./src/vendor:/var/php/test/vendor
+      - ./tests:/var/php/test/tests
+    command: [php, /var/php/vendor/bin/phpunit, /var/php/test/tests, --testdox]
