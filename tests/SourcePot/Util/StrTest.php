@@ -1,9 +1,9 @@
 <?php
 
-namespace RWA\Util;
+namespace SourcePot\Util;
 
 use PHPUnit\Framework\TestCase;
-use RWA\Util\Str;
+use SourcePot\Util\Str;
 
 class StrTest extends TestCase
 {

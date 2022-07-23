@@ -1,6 +1,6 @@
 <?php
 
-namespace RWA\Util;
+namespace SourcePot\Util;
 
 /**
  * base64_encode and base64_decode functions that are "url safe",

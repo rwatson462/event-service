@@ -1,6 +1,6 @@
 <?php
 
-namespace RWA\Util;
+namespace SourcePot\Util;
 
 /**
  * A simple class wrapper for json_encode and json_decode that automatically throws on error and

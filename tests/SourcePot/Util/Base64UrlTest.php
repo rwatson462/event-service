@@ -1,9 +1,9 @@
 <?php
 
-namespace RWA\Util;
+namespace SourcePot\Util;
 
 use PHPUnit\Framework\TestCase;
-use RWA\Util\Base64Url;
+use SourcePot\Util\Base64Url;
 
 class Base64UrlTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace RWA\Util;
+namespace SourcePot\Util;
 
 class Str
 {
