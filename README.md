@@ -1,11 +1,23 @@
 # event-service
 A simple http listener that accepts events as JSON packets, stores then dispatches them
 
-# Tests
+## Docker setup
+Included in this repository is a `docker-compose.yml` file that includes containers for:
+1. The event-service itself
+2. Redis server for persistence
+3. Composer environment with PHPUnit installed (for tests)
+4. Demo server for benchmarking requests (see side note below)
+
+Over time I'm sure this list will grow as I do want to add a front end eventually to view
+information on the event-system and perhaps allow some rudimentary configuration.
+
+All images that run PHP run PHP 8.1 and will be upgraded to PHP 8.2 as soon as that is released.
+
+## Tests
 To run the tests, run `docker compose run test` from a terminal.  This will build the test container
 and run PHPUnit which will use the tests directory then exit.
 
-# Side-note
+## Side note
 
 An interesting thing cropped up in conversation recently - that manually opening a socket and
 sending an HTTP request is quicker than using CURL.  When you stop and think about it, it makes

@@ -23,6 +23,7 @@ services:
       php, /var/php/vendor/bin/phpunit, /var/php/test/tests,
       --bootstrap, /var/php/test/tests/bootstrap.php, --testdox
       ]
+    profiles: [test]
 
   example_client:
     image: php:8.1
@@ -32,3 +33,6 @@ services:
     command: [php, -S, 0.0.0.0:8000, index.php]
     ports:
       - 12345:8000
+    depends_on:
+      - server
+    profiles: [demo]
