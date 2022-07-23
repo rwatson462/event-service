@@ -1,1 +1,2 @@
+# The `data` directory is ignored because it contains the Redis database files
 data
