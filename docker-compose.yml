@@ -1,5 +1,7 @@
 version: "3.0"
+
 services:
+
   server:
     build: build/server
     volumes:
@@ -10,10 +12,12 @@ services:
       - 9501:9501
     depends_on:
       - redis
+
   redis:
     image: redis
     volumes:
       - ./data/redis:/data
+
   test:
     build: build/test
     volumes:
@@ -23,7 +27,6 @@ services:
       php, /var/php/vendor/bin/phpunit, /var/php/test/tests,
       --bootstrap, /var/php/test/tests/bootstrap.php, --testdox
       ]
-    profiles: [test]
 
   example_client:
     image: php:8.1
@@ -35,4 +38,3 @@ services:
       - 12345:8000
     depends_on:
       - server
-    profiles: [demo]

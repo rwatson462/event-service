@@ -14,7 +14,7 @@ information on the event-system and perhaps allow some rudimentary configuration
 All images that run PHP run PHP 8.1 and will be upgraded to PHP 8.2 as soon as that is released.
 
 ## Tests
-To run the tests, run `docker compose run test` from a terminal.  This will build the test container
+To run the tests, run `docker compose up test` from a terminal.  This will build the test container
 and run PHPUnit which will use the tests directory then exit.
 
 ## Side note
