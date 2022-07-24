@@ -1,5 +1,10 @@
 <?php
 
+if(!isset($_GET['run'])) {
+    echo 'Add ?run to query string to run the demo';
+    exit;
+}
+
 include 'HttpClientInterface.php';
 include 'CurlClient.php';
 include 'SocketClient.php';
@@ -7,12 +12,12 @@ include 'SocketClient.php';
 /**
  * Runs a function repeatedly and records the time taken on each run to calculate a grand total,
  * mean and median averages.
- * @param HttpClientInterface $client the client to use
  * @param callable $function the function to call over and over
+ * @param HttpClientInterface $client the client to use
  * @param int $count the number of times to call the function
  * @return array [total, average, median]
  */
-function run(HttpClientInterface $client, callable $function, int $count): array
+function run(callable $function, HttpClientInterface $client, int $count): array
 {
     // Set up some counting state
     $times = [];
@@ -22,7 +27,7 @@ function run(HttpClientInterface $client, callable $function, int $count): array
     while($i-- > 0) {
         $start = microtime(true);
         $function($client);
-        $times[] = microtime(true)-$start;
+        $times[] = (microtime(true)-$start)*1000;
     }
     
     // Calculate the total and averages
@@ -46,7 +51,7 @@ function run(HttpClientInterface $client, callable $function, int $count): array
     ];
 }
 
-// Get this out of the way to stop PHP from complaining later
+// Get this out of the way early to stop PHP from complaining later
 header('Content-type: text/plain');
 
 // Create our clients
@@ -63,13 +68,14 @@ $clientFunction = function(HttpClientInterface $client) use ($url): void {
 };
 
 // We pass the repeatable call into this run function to actually run it
-$socketTimes = run($s, $clientFunction, $totalTimes);
-$curlTimes = run($c, $clientFunction, $totalTimes);
+$socketTimes = run($clientFunction, $s, $totalTimes);
+sleep(10);
+$curlTimes = run($clientFunction, $c, $totalTimes);
 
 // Output the results
 print_r([
-    'socket' => array_map(fn($item) => number_format($item, 4), $socketTimes),
-    'curl' => array_map(fn($item) => number_format($item, 4), $curlTimes)
+    'socket' => array_map(fn($item) => number_format($item, 4, '.', ''), $socketTimes),
+    'curl' => array_map(fn($item) => number_format($item, 4, '.', ''), $curlTimes)
 ]);
 
 // Some silliness to show the faster method with a percentage speed difference

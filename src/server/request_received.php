@@ -1,15 +1,25 @@
 <?php
 
-use SourcePot\Util\Bag;
+use SourcePot\Bag\BagInterface;
+use SourcePot\Bag\ReadOnlyBag;
 use SourcePot\Util\JSON;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 
 function requestReceived(Request $request, Response $response): void
 {
+    $url = rtrim($request->server['request_uri'], '/');
+
+    // Handle ping/pong message
+    if ($url === '/ping') {
+        $response->header('content-type', 'text/plain');
+        $response->write('pong');
+        return;
+    }
+
     echo "{$request->server['request_method']} request received!\n";
 
-    $headerBag = new Bag($request->header);
+    $headerBag = new ReadOnlyBag($request->header);
 
     // Handle json bodies from anything but GET requests
     if ($request->server['request_method'] !== 'GET'
@@ -25,23 +35,14 @@ function requestReceived(Request $request, Response $response): void
             
             // Send response to client
             $response->status(400, 'Invalid JSON body');
-            $response->end('Invalid JSON body');
+            $response->write('Invalid JSON body');
 
             // Process no more of this request
             return;
         }
     }
 
-    $postData = new Bag($request->post ?? []);
-
-    $url = rtrim($request->server['request_uri'], '/');
-
-    // Handle basic routing
-    if ($url === '/ping') {
-        $response->header('content-type', 'text/plain');
-        $response->end('pong');
-        return;
-    }
+    $postData = new ReadOnlyBag($request->post ?? []);
 
     if ($url === '/debug') {
         debugOutput($request, $response, $headerBag, $postData);
@@ -52,7 +53,7 @@ function requestReceived(Request $request, Response $response): void
     $user_key = $headerBag->get('api-key');
     if (!$user_key) {
         $response->status(400);
-        $response->end('Missing API key');
+        $response->write('Missing API key');
         return;
     }
 
@@ -61,12 +62,12 @@ function requestReceived(Request $request, Response $response): void
     $key = $redis->get('api-key') ?: '';
     if ($user_key !== $key) {
         $response->status(400);
-        $response->end('Invalid API key');
+        $response->write('Invalid API key');
         return;
     }
     
     echo "Post data received:\n";
-    print_r($postData);
+    print_r($postData->all());
 
     echo match($request->server['request_method']) {
         'POST' => "POST request\n",
@@ -74,16 +75,21 @@ function requestReceived(Request $request, Response $response): void
     };
 
     $response->header("Content-Type", "text/plain");
-    $response->end("Hello World");
+    $response->write("Hello World");
 }
 
 
 // todo remove this debugging output one day
-function debugOutput(Request $request, Response $response, Bag $headerBag, Bag $postData): void {
+function debugOutput(
+    Request $request,
+    Response $response,
+    BagInterface $headerBag,
+    BagInterface $postData
+): void {
     $redis = new Redis;
     $redis->connect('redis');
     $response->header('Content-type', 'text/plain');
-    $response->end( JSON::prettify([
+    $response->write( JSON::prettify([
         'header' => $headerBag->all(),
         'server' => $request->server,
         'post' => $postData->all(),
