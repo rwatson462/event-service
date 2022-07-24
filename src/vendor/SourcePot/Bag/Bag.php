@@ -1,14 +1,15 @@
 <?php
 
-namespace SourcePot\Util;
+namespace SourcePot\Bag;
 
-class Bag
+class Bag implements BagInterface
 {
     public function __construct(
-        private array $contents = []
+        protected array $contents = []
     ) {
-        // Filter out any non-string values then convert them to lower case,
-        // Then convert keys to lower case
+        // Filter out any non-string values
+        // Convert remaining values to lower case,
+        // Convert keys to lower case
         $this->contents = array_change_key_case(
             array_map(
                 static fn($value) => strtolower($value),
@@ -16,7 +17,8 @@ class Bag
                     $contents,
                     static fn($item) => is_string($item)
                 )
-            )
+            ),
+            CASE_LOWER
         );
     }
 
@@ -37,6 +39,7 @@ class Bag
 
     public function all(): array
     {
+        // copy the contents of the bag when returning so they cannot be mutable
         return [...$this->contents];
     }
 }
