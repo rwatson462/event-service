@@ -23,11 +23,12 @@ $server->on("Start", function(Server $server) use($config) {
 });
 
 $server->on("Request", function(Request $request, Response $response) use ($config) {
-    try {
+    // try {
+        
         requestReceived($request, $response);
-    } catch (Throwable $t) {
-        echo $t->getMessage();
-    }
+    // } catch (Throwable $t) {
+        // echo $t->getMessage();
+    // }
 
     if($config->has('verbose')) {
         echo "Memory used: " . number_format(memory_get_usage()/1024/1024, 2) . "M\n";
