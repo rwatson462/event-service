@@ -5,9 +5,9 @@ services:
   server:
     build: build/server
     volumes:
-      - ./src/server:/var/www
-      - ./src/vendor:/var/vendor
-    command: [php, /var/www/server.php]
+      - ./src/server:/var/www/html
+      - ./src/vendor:/var/www/vendor
+    command: [php, /var/www/html/server.php]
     ports:
       - 9501:9501
     depends_on:
