@@ -23,10 +23,21 @@ services:
     volumes:
       - ./src/vendor:/var/php/test/vendor
       - ./tests:/var/php/test/tests
+    working_dir: /var/php
     command: [
-      php, /var/php/vendor/bin/phpunit, /var/php/test/tests,
-      --bootstrap, /var/php/test/tests/bootstrap.php, --testdox
+      php, vendor/bin/phpunit, test/tests,
+      --bootstrap, test/tests/bootstrap.php #, --testdox
       ]
+
+  client:
+    build: build/client
+    volumes: 
+      - ./src/client:/var/www
+    restart: always
+    command: [php, -S, 0.0.0.0:8000]
+    working_dir: /var/www
+    ports:
+      - 9502:8000
 
   example_client:
     image: php:8.1

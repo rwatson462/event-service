@@ -75,14 +75,22 @@ class StrTest extends TestCase
         $this->assertTrue($str->endsWith(Str::from($end)));
     }
 
-    public function testSlice(): void
+    protected function dataProviderSlice(): iterable
+    {
+        yield '4,4' => [4,4, 'o, w'];
+        yield '7,null' => [7,null,'world'];
+        yield '10,-1' => [10,-1,'l'];
+    }
+
+    /**
+     * @dataProvider dataProviderSlice
+     */
+    public function testSlice($start, $end, $expected): void
     {
         $str = new Str('hello, world');
-        $slice = new Str('o, w');
+        $slice = new Str($expected);
 
-        $this->assertEquals($slice, $str->slice(4, 4));
-
-        // @todo add more assertions with negative start index, invalid lengths, etc
+        $this->assertEquals($slice, $str->slice($start,$end));
     }
 
     public function testEquals(): void

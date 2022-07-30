@@ -6,6 +6,7 @@ use EventService\Http\Controller\PingController;
 use EventService\Http\Controller\DebugController;
 use EventService\Http\Controller\NotFoundController;
 use EventService\Http\Controller\ReceiveEventController;
+use EventService\Http\Controller\TokenController;
 use SourcePot\Util\JSON;
 use SourcePot\Bag\BagInterface;
 use Swoole\Http\Request;
@@ -32,6 +33,7 @@ class RequestHandler
     
             $controller = match($url) {
                 '/ping' => (new PingController)->__invoke($request, $response),
+                '/token' => (new TokenController)->__invoke($request, $response),
                 '/debug' => (new DebugController)->__invoke($request, $response),
                 '/event' => (new ReceiveEventController)->__invoke($request, $response),
                 default => (new NotFoundController)->__invoke($request,$response)
@@ -42,8 +44,9 @@ class RequestHandler
             echo $t->getMessage();
     
             // send the error back to the client
-            // @todo remove this eventually
-            $response->write($t->getMessage());
+            $response->header('content-type', 'text/plain');
+            $response->status(500);
+            $response->write('error');
         }
         finally {
             if($this->config->has('verbose')) {

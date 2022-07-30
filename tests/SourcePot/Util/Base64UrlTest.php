@@ -17,7 +17,7 @@ class Base64UrlTest extends TestCase
             'subjects?_d=1',
             'c3ViamVjdHM_X2Q9MQ==',
         ];
-        // @todo find a string that encodes with a '+' in it
+        // todo find a string that encodes with a '+' in it
     }
 
     /**
@@ -40,7 +40,7 @@ class Base64UrlTest extends TestCase
             'c3ViamVjdHM_X2Q9MQ==',
             'subjects?_d=1',
         ];
-        // @todo find a string that encodes with a '+' in it
+        // todo find a string that encodes with a '+' in it
     }
 
     /**
